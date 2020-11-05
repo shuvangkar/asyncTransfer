@@ -20,6 +20,7 @@ void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
   }
 }
 
+
 void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
 {
   _toJson = tojson;
@@ -30,9 +31,14 @@ void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
   }
 }
 
-void AsyncServer::sendLoop(bool sendPermit)
+void AsyncServer::start()
 {
-  if (sendPermit)
+  sendState = WAIT;
+}
+
+void AsyncServer::sendLoop(bool connected)
+{
+  if (connected)
   {
     Serial.println(F("Sending Data.."));
     uint8_t *flashPtr = NULL;
@@ -40,7 +46,8 @@ void AsyncServer::sendLoop(bool sendPermit)
     switch (sendState)
     {
       case READ_MEM:
-        flashPtr = _memQPtr -> read(payloadBuf, totalPayload);
+        Serial.println(F("S_STATE: READ_MEM"));
+        flashPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
         if (flashPtr != NULL)
         {
           payloadPtr = flashPtr;
@@ -54,6 +61,7 @@ void AsyncServer::sendLoop(bool sendPermit)
         sendState = SEND;
         break;
       case SEND:
+        Serial.println(F("S_STATE: SEND"));
         if (json != NULL)
         {
           _send(json);
@@ -61,19 +69,22 @@ void AsyncServer::sendLoop(bool sendPermit)
         }
         break;
       case WAIT:
+        Serial.println(F("S_STATE: WAIT"));
         if (_ackWait() == 200)
         {
           sendState = SUCCESS;
         }
         else
         {
-          sendState = NO_CONNNECTION;
+          sendState = FAILED;
         }
         break;
       case SUCCESS:
+        Serial.println(F("S_STATE: SUCCESS"));
         sendState = READ_MEM;
         break;
-      case NO_CONNNECTION:
+      case FAILED:
+        Serial.println(F("S_STATE: FAILED"));
         break;
     }
   }

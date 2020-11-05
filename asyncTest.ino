@@ -15,14 +15,16 @@ void setup()
   server.setServerCbs(sendSerial,wait);
   server.setSchema(sizeof(sensor_t),1);
   server.setJson(toJson,256);
+  server.start();
   rcvStr.reserve(32);
+  
   permitFlag = true;
   Serial.println(F("Setup done"));
 }
 
 void loop() 
 {
-//  server.sendLoop(permitFlag);
+  server.sendLoop(permitFlag);
 }
 
 void sendSerial(const char *data)
