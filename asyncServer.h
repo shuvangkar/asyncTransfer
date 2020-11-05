@@ -11,7 +11,8 @@ class AsyncServer
 {
   public:
     void setServerCbs(send_t send, waitForAck_t ackFunc);
-    void setSchema(uint8_t payloadSz,toJson_t tojson, uint8_t total = 1);
+    void setSchema(uint8_t payloadSz, uint8_t total = 1);
+    void setJson(toJson_t tojson, uint16_t jsonBufsize = 128);
     void sendLoop(bool sendPermit);
   private:
     MemQ *_memQPtr;
