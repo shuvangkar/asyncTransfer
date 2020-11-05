@@ -35,7 +35,6 @@ void AsyncServer::sendLoop(bool sendPermit)
   if (sendPermit)
   {
     Serial.println(F("Sending Data.."));
-    //    _send(temp);
     uint8_t *flashPtr = NULL;
     char *json = NULL;
     switch (sendState)
