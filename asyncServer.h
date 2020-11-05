@@ -9,13 +9,15 @@ typedef int (*waitForAck_t)(void);
 class AsyncServer
 {
   public:
-    void setCb(send_t send, waitForAck_t ackFunc);
+    void setCbFuncs(send_t send, waitForAck_t ackFunc);
     void sendLoop(bool sendPermit);
   private:
-    bool _sendNow
     MemQ *_memQPtr;
     send_t _send;
     waitForAck_t _waitForAck;
-
+    uint8_t *_flashdataPtr;
+    uint8_t *_payloadPtr;
+    
+    
 };
 #endif
