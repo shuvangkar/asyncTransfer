@@ -10,6 +10,7 @@ typedef enum state_e
   NO_CONNNECTION,
 };
 state_e sendState;
+char jsonBuffer[256];
 
 const char temp[] = "This is just test";
 void AsyncServer::setCbFuncs(send_t send, waitForAck_t ackFunc)
