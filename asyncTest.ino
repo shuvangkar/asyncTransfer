@@ -1,4 +1,6 @@
 #include "asyncServer.h"
+#include "payloadSchema.h"
+
 
 void sendSerial(const char *data);
 int wait();
@@ -10,7 +12,9 @@ bool permitFlag;
 void setup() 
 {
   Serial.begin(9600);
-  server.setCbFuncs(sendSerial,wait);
+  server.setServerCbs(sendSerial,wait);
+  server.setSchema(sizeof(sensor_t),1);
+  server.setJson(toJson,256);
   rcvStr.reserve(32);
   permitFlag = true;
   Serial.println(F("Setup done"));
@@ -18,7 +22,7 @@ void setup()
 
 void loop() 
 {
-  server.sendLoop(permitFlag);
+//  server.sendLoop(permitFlag);
 }
 
 void sendSerial(const char *data)
@@ -27,7 +31,7 @@ void sendSerial(const char *data)
 }
 int wait()
 {
-  if(Serial.available()
+  if(Serial.available())
   {
     rcvStr = Serial.readString();
     int retData = rcvStr.toInt();
