@@ -5,7 +5,7 @@
 
 typedef void (*send_t)(const char*);
 typedef int (*ackWait_t)(void);
-typedef char *(*toJson_t)(uint8_t*,char*, uint8_t);//payload, json buffer, total
+typedef char *(*toJson_t)(uint8_t*, char*, uint8_t); //payload, json buffer, total
 
 typedef enum state_e
 {
@@ -25,22 +25,20 @@ class AsyncServer
     void setServerCbs(send_t send, ackWait_t ackFunc);
     void setSchema(uint8_t payloadSize, uint8_t total = 1);
     void setJson(toJson_t tojson, uint16_t jsonBufSize = 128);
-    
+
     void sendLoop(bool sendPermit);
   private:
     MemQ *_memQPtr;
     state_e sendState;
-    
+
     send_t _send;
     ackWait_t _ackWait;
     toJson_t _toJson;
 
     uint8_t *payloadBuf = NULL;
     char *jsonBuffer = NULL;
+    uint8_t totalPayload;
 
-    
-    uint8_t _totalPayload;
-    uint8_t *_flashdataPtr;
-    uint8_t *_payloadPtr; 
+    uint8_t *payloadPtr = NULL;
 };
 #endif
