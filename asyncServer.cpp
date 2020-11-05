@@ -1,7 +1,5 @@
 #include "asyncServer.h"
 
-const char temp[] = "This is just test";
-
 
 void AsyncServer::setServerCbs(send_t send, ackWait_t ackFunc)
 {
