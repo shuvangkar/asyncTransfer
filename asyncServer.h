@@ -41,5 +41,6 @@ class AsyncServer
     uint8_t totalPayload;
 
     uint8_t *payloadPtr = NULL;
+    char    *jsonPtr   = NULL;
 };
 #endif

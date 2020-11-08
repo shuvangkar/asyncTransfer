@@ -17,11 +17,15 @@ void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
 {
   totalPayload = total;
   Serial.print(F("Pld Size: ")); Serial.println(payloadSize);
-  payloadBuf = (uint8_t*)malloc(payloadSize * totalPayload);
+  // payloadBuf = (uint8_t*)malloc(payloadSize * totalPayload);
+  payloadBuf = (uint8_t*)calloc(payloadSize * totalPayload,sizeof(uint8_t));
   if (payloadBuf != NULL)
   {
     Serial.println(F("Payload Memory allocated"));
   }
+  // payloadBuf[0] = 10;
+  // payloadBuf[5] = 20;
+  // payloadBuf[4] = 200;
 }
 
 
@@ -38,6 +42,29 @@ void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
 void AsyncServer::start()
 {
   sendState = READ_MEM;
+  bool ok = true;
+
+  if(_send == NULL) ok = false;
+  if(_ackWait == NULL) ok = false;
+  if(_toJson == NULL ) ok = false;
+
+  if(ok == true)
+  {
+  	Serial.println(F("Server Init ok"));
+  }
+  else
+  {
+  	Serial.println(F("Server init failed"));
+  }
+
+  // payloadBuf[0] = 10;
+  // payloadBuf[1] = 20;
+  // for(uint8_t i = 0; i< 8; i++)
+  // {
+  // 	 Serial.println(payloadBuf[i]);
+  // }
+ 
+
 }
 
 void AsyncServer::sendLoop(bool connected)
@@ -45,30 +72,27 @@ void AsyncServer::sendLoop(bool connected)
   if (connected)
   {
     // Serial.println(F("Sending Data.."));
-    uint8_t *flashPtr = NULL;
-    char *json = NULL;
     switch (sendState)
     {
       case READ_MEM:
         // Serial.println(F("S_STATE: READ_MEM"));
-        flashPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
-        if (flashPtr != NULL)
+        payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
+        if (payloadPtr != NULL)
         {
-          payloadPtr = flashPtr;
           sendState = TO_JSON;
         }
         break;
       case TO_JSON:
         Serial.println(F("S_STATE: TO_JSON"));
-        json = _toJson(payloadPtr, jsonBuffer, totalPayload);
-        Serial.println(json);
+        jsonPtr = _toJson(payloadPtr, jsonBuffer, totalPayload);
+        Serial.println(jsonPtr);
         sendState = SERVER_SEND;
         break;
       case SERVER_SEND:
         Serial.println(F("S_STATE: SEND"));
-        if (json != NULL)
+        if (jsonPtr != NULL)
         {
-          _send(json);
+          _send(jsonPtr);
           sendState = WAIT_ACK;
         }
         break;
