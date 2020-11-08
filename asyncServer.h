@@ -11,9 +11,9 @@ typedef enum state_e
 {
   READ_MEM,
   TO_JSON,
-  SEND,
-  WAIT,
-  SUCCESS,
+  SERVER_SEND,
+  WAIT_ACK,
+  SEND_SUCCESS,
   FAILED,
 };
 

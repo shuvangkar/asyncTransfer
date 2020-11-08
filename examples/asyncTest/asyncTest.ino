@@ -1,7 +1,17 @@
 #include "asyncServer.h"
-#include "payloadSchema.h"
 
+typedef struct sensor_t
+{
+  float current;
+  float voltage;
+};
 
+typedef union payload_t
+{
+  sensor_t sensor;
+};
+
+char *toJson(uint8_t *payload, char *jsonBuf, uint8_t total = 1);
 void sendSerial(const char *data);
 int wait();
 
@@ -39,4 +49,10 @@ int wait()
     int retData = rcvStr.toInt();
     Serial.print(F("ACK Received: "));Serial.println(retData);
   }
+}
+
+char *toJson(uint8_t *payload, char *jsonBuf, uint8_t total)
+{
+  Serial.println(F("Converting JSON"));
+  return jsonBuf;
 }

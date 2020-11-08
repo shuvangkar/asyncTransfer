@@ -31,7 +31,7 @@ void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
 
 void AsyncServer::start()
 {
-  sendState = WAIT;
+  sendState = READ_MEM;
 }
 
 void AsyncServer::sendLoop(bool connected)
@@ -56,28 +56,28 @@ void AsyncServer::sendLoop(bool connected)
         Serial.println(F("S_STATE: TO_JSON"));
         json = _toJson(payloadPtr, jsonBuffer, totalPayload);
         Serial.println(json);
-        sendState = SEND;
+        sendState = SERVER_SEND;
         break;
-      case SEND:
+      case SERVER_SEND:
         Serial.println(F("S_STATE: SEND"));
         if (json != NULL)
         {
           _send(json);
-          sendState = WAIT;
+          sendState = WAIT_ACK;
         }
         break;
-      case WAIT:
+      case WAIT_ACK:
         Serial.println(F("S_STATE: WAIT"));
         if (_ackWait() == 200)
         {
-          sendState = SUCCESS;
+          sendState = SEND_SUCCESS;
         }
         else
         {
           sendState = FAILED;
         }
         break;
-      case SUCCESS:
+      case SEND_SUCCESS:
         Serial.println(F("S_STATE: SUCCESS"));
         sendState = READ_MEM;
         break;
