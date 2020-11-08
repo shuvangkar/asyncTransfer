@@ -1,4 +1,7 @@
 #include "asyncServer.h"
+#include "MemQ.h"
+
+
 
 typedef struct sensor_t
 {
@@ -15,7 +18,8 @@ char *toJson(uint8_t *payload, char *jsonBuf, uint8_t total = 1);
 void sendSerial(const char *data);
 int wait();
 
-AsyncServer server;
+MemQ memQ(0,100);
+AsyncServer server(&memQ);
 String rcvStr;
 
 bool permitFlag;
