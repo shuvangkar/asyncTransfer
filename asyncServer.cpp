@@ -1,6 +1,12 @@
 #include "asyncServer.h"
 
 
+
+AsyncServer::AsyncServer(MemQ *memQPtr)
+{
+	_memQPtr = memQPtr;
+}
+
 void AsyncServer::setServerCbs(send_t send, ackWait_t ackFunc)
 {
   _send = send;
@@ -38,13 +44,13 @@ void AsyncServer::sendLoop(bool connected)
 {
   if (connected)
   {
-    Serial.println(F("Sending Data.."));
+    // Serial.println(F("Sending Data.."));
     uint8_t *flashPtr = NULL;
     char *json = NULL;
     switch (sendState)
     {
       case READ_MEM:
-        Serial.println(F("S_STATE: READ_MEM"));
+        // Serial.println(F("S_STATE: READ_MEM"));
         flashPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
         if (flashPtr != NULL)
         {

@@ -22,6 +22,7 @@ typedef enum state_e
 class AsyncServer
 {
   public:
+  	AsyncServer(MemQ *memQPtr);
     void setServerCbs(send_t send, ackWait_t ackFunc);
     void setSchema(uint8_t payloadSize, uint8_t total = 1);
     void setJson(toJson_t tojson, uint16_t jsonBufSize = 128);
