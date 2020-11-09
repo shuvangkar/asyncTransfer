@@ -28,6 +28,7 @@ class AsyncServer
     void setJson(toJson_t tojson, uint16_t jsonBufSize = 128);
     void start();
     void sendLoop(bool connected);
+    void printPayload(byte *buf, byte len);
   private:
     MemQ *_memQPtr;
     state_e sendState;

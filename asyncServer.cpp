@@ -23,9 +23,6 @@ void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
   {
     Serial.println(F("Payload Memory allocated"));
   }
-  // payloadBuf[0] = 10;
-  // payloadBuf[5] = 20;
-  // payloadBuf[4] = 200;
 }
 
 
@@ -56,15 +53,15 @@ void AsyncServer::start()
   {
   	Serial.println(F("Server init failed"));
   }
+}
 
-  // payloadBuf[0] = 10;
-  // payloadBuf[1] = 20;
-  // for(uint8_t i = 0; i< 8; i++)
-  // {
-  // 	 Serial.println(payloadBuf[i]);
-  // }
- 
-
+void AsyncServer::printPayload(byte *buf, byte len)
+{
+  for (byte i = 0; i < len; i++)
+  {
+    Serial.print(buf[i]); Serial.print(" ");
+  }
+  Serial.println();
 }
 
 void AsyncServer::sendLoop(bool connected)
@@ -72,13 +69,15 @@ void AsyncServer::sendLoop(bool connected)
   if (connected)
   {
     // Serial.println(F("Sending Data.."));
+    int pipeAck;
     switch (sendState)
     {
       case READ_MEM:
         // Serial.println(F("S_STATE: READ_MEM"));
-        payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
+        this -> payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
         if (payloadPtr != NULL)
         {
+          printPayload(payloadPtr,32);
           sendState = TO_JSON;
         }
         break;
@@ -98,7 +97,9 @@ void AsyncServer::sendLoop(bool connected)
         break;
       case WAIT_ACK:
         Serial.println(F("S_STATE: WAIT"));
-        if (_ackWait() == 200)
+        pipeAck = _ackWait();
+        Serial.print(F("===> ACK : ")); Serial.println(pipeAck);
+        if (pipeAck == 200)
         {
           sendState = SEND_SUCCESS;
         }
@@ -113,6 +114,7 @@ void AsyncServer::sendLoop(bool connected)
         break;
       case FAILED:
         Serial.println(F("S_STATE: FAILED"));
+        sendState = SERVER_SEND;
         break;
     }
   }
