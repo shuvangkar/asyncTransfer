@@ -9,12 +9,19 @@ AsyncServer::AsyncServer(MemQ *memQPtr)
 
 void AsyncServer::setServerCbs(send_t send, ackWait_t ackFunc)
 {
-  _send = send;
+  _send = (send_t)send;
+  _ackWait = ackFunc;
+}
+
+void AsyncServer::setServerCbs(sendL_t send, ackWait_t ackFunc)
+{
+  _send = (sendL_t)send;
   _ackWait = ackFunc;
 }
 
 void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
 {
+  _payloadSz = payloadSize;
   totalPayload = total;
   Serial.print(F("Pld Size: ")); Serial.println(payloadSize);
   // payloadBuf = (uint8_t*)malloc(payloadSize * totalPayload);
@@ -99,10 +106,14 @@ void AsyncServer::sendLoop(bool connected)
         Serial.println(F("S_STATE: SEND"));
         if (jsonPtr != NULL)
         {
-          _send(jsonPtr);
+          (send_t)_send(jsonPtr);
           sendState = WAIT_ACK;
         }
         break;
+      case SERVER_SEND_WITH_LEN:
+      	 (sendL_t)_send(payloadPtr,_payloadSz*totalPayload);
+      	 sendState = WAIT_ACK;
+      break;
       case WAIT_ACK:
         Serial.println(F("S_STATE: WAIT"));
         pipeAck = _ackWait();
