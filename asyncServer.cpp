@@ -91,7 +91,7 @@ void AsyncServer::sendLoop(bool connected)
           }
           else
           {
-          	sendState = SERVER_SEND;
+          	sendState = SERVER_SEND_WITH_LEN;
           }
           
         }
