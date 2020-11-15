@@ -78,7 +78,15 @@ void AsyncServer::sendLoop(bool connected)
         if (payloadPtr != NULL)
         {
           printPayload(payloadPtr,32);
-          sendState = TO_JSON;
+          if(_toJson)
+          {
+          	sendState = TO_JSON;
+          }
+          else
+          {
+          	sendState = SERVER_SEND;
+          }
+          
         }
         break;
       case TO_JSON:
