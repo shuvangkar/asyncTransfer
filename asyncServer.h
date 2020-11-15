@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include "MemQ.h"
 
-typedef void (*send_t)(const void*);
-typedef void (*sendL_t)(const void*, const uint8_t);
+typedef void (*send_t)(const char*);
+typedef void (*sendL_t)(const uint8_t*, const uint8_t);
 typedef int (*ackWait_t)(void);
 typedef char *(*toJson_t)(uint8_t*, char*, uint8_t); //payload, json buffer, total
 
