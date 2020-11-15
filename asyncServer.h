@@ -39,7 +39,7 @@ class AsyncServer
     send_t  _send;
     sendL_t _sendL;
     ackWait_t _ackWait;
-    toJson_t _toJson;
+    toJson_t _toJson = NULL;
 
     uint8_t *payloadBuf = NULL;
     char *jsonBuffer = NULL;
