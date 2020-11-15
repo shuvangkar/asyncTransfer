@@ -9,13 +9,13 @@ AsyncServer::AsyncServer(MemQ *memQPtr)
 
 void AsyncServer::setServerCbs(send_t send, ackWait_t ackFunc)
 {
-  _send = (send_t)send;
+  _send = send;
   _ackWait = ackFunc;
 }
 
 void AsyncServer::setServerCbs(sendL_t send, ackWait_t ackFunc)
 {
-  _send = (sendL_t)send;
+  _sendL = send;
   _ackWait = ackFunc;
 }
 
@@ -106,12 +106,12 @@ void AsyncServer::sendLoop(bool connected)
         Serial.println(F("S_STATE: SEND"));
         if (jsonPtr != NULL)
         {
-          (send_t)_send(jsonPtr);
+          _send(jsonPtr);
           sendState = WAIT_ACK;
         }
         break;
       case SERVER_SEND_WITH_LEN:
-      	 (sendL_t)_send(payloadPtr,_payloadSz*totalPayload);
+      	 _sendL(payloadPtr,_payloadSz*totalPayload);
       	 sendState = WAIT_ACK;
       break;
       case WAIT_ACK:

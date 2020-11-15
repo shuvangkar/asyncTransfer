@@ -36,7 +36,8 @@ class AsyncServer
     MemQ *_memQPtr;
     state_e sendState;
 
-    void  *_send;
+    send_t  _send;
+    sendL_t _sendL;
     ackWait_t _ackWait;
     toJson_t _toJson;
 
