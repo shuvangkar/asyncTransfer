@@ -13,7 +13,6 @@ typedef enum state_e
   READ_MEM,
   TO_JSON,
   SERVER_SEND,
-  SERVER_SEND_WITH_LEN,
   WAIT_ACK,
   SEND_SUCCESS,
   FAILED,

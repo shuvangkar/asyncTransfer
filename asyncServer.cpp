@@ -48,9 +48,17 @@ void AsyncServer::start()
   sendState = READ_MEM;
   bool ok = true;
 
-  if(_send == NULL) ok = false;
+  if(_toJson)
+  {
+    if(_send == NULL) ok = false;
+  }
+  else
+  {
+    if(_sendL == NULL) ok = false;
+  } 
+
   if(_ackWait == NULL) ok = false;
-  if(_toJson == NULL ) ok = false;
+  // if(_toJson == NULL ) ok = false;
 
   if(ok == true)
   {
@@ -91,7 +99,7 @@ void AsyncServer::sendLoop(bool connected)
           }
           else
           {
-          	sendState = SERVER_SEND_WITH_LEN;
+          	sendState = SERVER_SEND;
           }
           
         }
@@ -104,16 +112,25 @@ void AsyncServer::sendLoop(bool connected)
         break;
       case SERVER_SEND:
         Serial.println(F("S_STATE: SEND"));
-        if (jsonPtr != NULL)
+        if(_toJson)
         {
+          if (jsonPtr != NULL)
+          {
           _send(jsonPtr);
+          sendState = WAIT_ACK;
+          }
+        }
+        else
+        {
+           _sendL(payloadPtr,_payloadSz*totalPayload);
           sendState = WAIT_ACK;
         }
         break;
-      case SERVER_SEND_WITH_LEN:
-      	 _sendL(payloadPtr,_payloadSz*totalPayload);
-      	 sendState = WAIT_ACK;
-      break;
+      // case SERVER_SEND_WITH_LEN:
+      // 	Serial.println(F("S_STATE: SEND WITH Len"));
+      // 	 _sendL(payloadPtr,_payloadSz*totalPayload);
+      // 	 sendState = WAIT_ACK;
+      // break;
       case WAIT_ACK:
         Serial.println(F("S_STATE: WAIT"));
         pipeAck = _ackWait();
@@ -133,6 +150,17 @@ void AsyncServer::sendLoop(bool connected)
         break;
       case FAILED:
         Serial.println(F("S_STATE: FAILED"));
+        sendState = SERVER_SEND;
+        // if(_toJson)
+        //  {
+        //     Serial.println(F("Selecting SERVER_SEND"));
+        //   	sendState = SERVER_SEND;
+        //  }
+        //  else
+        //  {
+        //     Serial.println(F("Selecting SERVER_SEND_WITH_LEN"));
+        //   	sendState = SERVER_SEND_WITH_LEN;
+        //  }
         sendState = SERVER_SEND;
         break;
     }
