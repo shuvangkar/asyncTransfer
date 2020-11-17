@@ -151,17 +151,6 @@ void AsyncServer::sendLoop(bool connected)
       case FAILED:
         Serial.println(F("S_STATE: FAILED"));
         sendState = SERVER_SEND;
-        // if(_toJson)
-        //  {
-        //     Serial.println(F("Selecting SERVER_SEND"));
-        //   	sendState = SERVER_SEND;
-        //  }
-        //  else
-        //  {
-        //     Serial.println(F("Selecting SERVER_SEND_WITH_LEN"));
-        //   	sendState = SERVER_SEND_WITH_LEN;
-        //  }
-        sendState = SERVER_SEND;
         break;
     }
   }
