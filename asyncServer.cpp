@@ -126,11 +126,6 @@ void AsyncServer::sendLoop(bool connected)
           sendState = WAIT_ACK;
         }
         break;
-      // case SERVER_SEND_WITH_LEN:
-      // 	Serial.println(F("S_STATE: SEND WITH Len"));
-      // 	 _sendL(payloadPtr,_payloadSz*totalPayload);
-      // 	 sendState = WAIT_ACK;
-      // break;
       case WAIT_ACK:
         Serial.println(F("S_STATE: WAIT"));
         pipeAck = _ackWait();
