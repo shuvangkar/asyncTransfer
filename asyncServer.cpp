@@ -22,10 +22,10 @@ void AsyncServer::setServerCbs(sendL_t send, ackWait_t ackFunc)
 void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
 {
   _payloadSz = payloadSize;
-  totalPayload = total;
+  _payloadTotal = total;
   Serial.print(F("Pld Size: ")); Serial.println(payloadSize);
-  // payloadBuf = (uint8_t*)malloc(payloadSize * totalPayload);
-  payloadBuf = (uint8_t*)calloc(payloadSize * totalPayload,sizeof(uint8_t));
+  // payloadBuf = (uint8_t*)malloc(payloadSize * _payloadTotal);
+  payloadBuf = (uint8_t*)calloc(payloadSize * _payloadTotal,sizeof(uint8_t));
   if (payloadBuf != NULL)
   {
     Serial.println(F("Payload Memory allocated"));
@@ -89,12 +89,14 @@ void AsyncServer::sendLoop(bool connected)
     {
       case READ_MEM:
         // Serial.println(F("S_STATE: READ_MEM"));
-        this -> payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, totalPayload);
+        this -> payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, _payloadTotal);
         if (payloadPtr != NULL)
         {
-          printPayload(payloadPtr,32);
+          // Serial.println(F("Mem red done----------<"));
+          printPayload(payloadPtr,_payloadSz*_payloadTotal);
           if(_toJson)
           {
+            // Serial.println(F("Going to json"));
           	sendState = TO_JSON;
           }
           else
@@ -106,23 +108,32 @@ void AsyncServer::sendLoop(bool connected)
         break;
       case TO_JSON:
         Serial.println(F("S_STATE: TO_JSON"));
-        jsonPtr = _toJson(payloadPtr, jsonBuffer, totalPayload);
-        Serial.println(jsonPtr);
-        sendState = SERVER_SEND;
+        jsonPtr = _toJson(payloadPtr, jsonBuffer, _payloadTotal);
+        if(jsonPtr != NULL )
+        {
+          Serial.println(jsonPtr);
+          sendState = SERVER_SEND;
+        }
+        else
+        {
+          //If unsupported packet found. read next memory
+          // Serial.println(F("Unsupported Packet"));
+          sendState = READ_MEM;
+        }
         break;
       case SERVER_SEND:
         Serial.println(F("S_STATE: SEND"));
         if(_toJson)
         {
-          if (jsonPtr != NULL)
-          {
+          // if (jsonPtr != NULL)
+          // {
           _send(jsonPtr);
           sendState = WAIT_ACK;
-          }
+          // }
         }
         else
         {
-           _sendL(payloadPtr,_payloadSz*totalPayload);
+           _sendL(payloadPtr,_payloadSz*_payloadTotal);
           sendState = WAIT_ACK;
         }
         break;

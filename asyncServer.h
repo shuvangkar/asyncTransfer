@@ -42,8 +42,8 @@ class AsyncServer
 
     uint8_t *payloadBuf = NULL;
     char *jsonBuffer = NULL;
-    uint8_t totalPayload;
-    uint8_t _payloadSz;
+    uint8_t _payloadTotal; //total number of payload packet
+    uint8_t _payloadSz;   //a single payload size
 
     uint8_t *payloadPtr = NULL;
     char    *jsonPtr   = NULL;
