@@ -32,6 +32,13 @@ void AsyncServer::setSchema(uint8_t payloadSize, uint8_t total)
   }
 }
 
+void AsyncServer::setSchema(uint8_t *payloadPtr, uint8_t payloadSize, uint8_t total)
+{
+	payloadBuf = payloadPtr;
+	_payloadSz = payloadSize;
+	_payloadTotal = total;
+}
+
 
 void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
 {
@@ -101,6 +108,7 @@ void AsyncServer::sendLoop(bool connected)
           }
           else
           {
+            Serial.println(F("Going to SERVER_SEND"));
           	sendState = SERVER_SEND;
           }
           
@@ -133,6 +141,8 @@ void AsyncServer::sendLoop(bool connected)
         }
         else
         {
+          Serial.println(F("Sending to Server"));
+           // printPayload(payloadPtr,_payloadSz*_payloadTotal);
            _sendL(payloadPtr,_payloadSz*_payloadTotal);
           sendState = WAIT_ACK;
         }
