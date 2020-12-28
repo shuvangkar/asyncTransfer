@@ -29,6 +29,7 @@ class AsyncServer
     void setSchema(uint8_t payloadSize, uint8_t total = 1);
     void setSchema(uint8_t *payloadPtr, uint8_t payloadSize, uint8_t total);
     void setJson(toJson_t tojson, uint16_t jsonBufSize = 128);
+    void setJson(toJson_t tojson, char *buf, uint16_t jsonBufSize = 128);
     void start();
     void sendLoop(bool connected);
     void printPayload(byte *buf, byte len);

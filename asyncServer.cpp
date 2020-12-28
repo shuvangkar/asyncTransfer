@@ -50,6 +50,12 @@ void AsyncServer::setJson(toJson_t tojson, uint16_t jsonBufSize)
   }
 }
 
+void AsyncServer::setJson(toJson_t tojson, char *buf, uint16_t jsonBufSize = 128)
+{
+	_toJson = tojson;
+	jsonBuffer = buf;
+}
+
 void AsyncServer::start()
 {
   sendState = READ_MEM;
