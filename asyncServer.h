@@ -4,7 +4,7 @@
 #include "MemQ.h"
 
 typedef void (*send_t)(const char*);
-typedef void (*sendL_t)(uint8_t*,uint8_t);
+typedef void (*sendL_t)(const uint8_t*,uint8_t);
 typedef int (*ackWait_t)(void);
 typedef char *(*toJson_t)(uint8_t*, char*, uint8_t); //payload, json buffer, total
 
@@ -41,12 +41,12 @@ class AsyncServer
     ackWait_t _ackWait = NULL;
     toJson_t _toJson = NULL;
 
-    uint8_t *payloadBuf = NULL;
+    char *payloadBuf = NULL;
     char *jsonBuffer = NULL;
     uint8_t _payloadTotal; //total number of payload packet
     uint8_t _payloadSz;   //a single payload size
 
-    uint8_t *payloadPtr = NULL;
+    char  *payloadPtr = NULL;
     char    *jsonPtr   = NULL;
 };
 #endif

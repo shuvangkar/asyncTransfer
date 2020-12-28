@@ -96,7 +96,7 @@ void AsyncServer::sendLoop(bool connected)
     {
       case READ_MEM:
         // Serial.println(F("S_STATE: READ_MEM"));
-        this -> payloadPtr = (uint8_t*)_memQPtr -> read(payloadBuf, _payloadTotal);
+        this -> payloadPtr = _memQPtr -> read(payloadBuf, _payloadTotal);
         if (payloadPtr != NULL)
         {
           // Serial.println(F("Mem red done----------<"));
