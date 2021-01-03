@@ -48,6 +48,6 @@ class AsyncServer
     uint8_t _payloadSz;   //a single payload size
 
     char  *payloadPtr = NULL;
-    char    *jsonPtr   = NULL;
+    char  *jsonPtr   = NULL;
 };
 #endif
