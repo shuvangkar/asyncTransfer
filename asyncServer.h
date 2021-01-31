@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "MemQ.h"
 
+typedef void (*read_t)(uint8_t *bufPtr, uint16_t bufSz);
 typedef void (*send_t)(const char*);
 typedef void (*sendL_t)(const uint8_t*,uint8_t);
 typedef int (*ackWait_t)(void);
@@ -24,12 +25,16 @@ class AsyncServer
 {
   public:
   	AsyncServer(MemQ *memQPtr);
+
     void setServerCbs(send_t send, ackWait_t ackFunc);
     void setServerCbs(sendL_t send, ackWait_t ackFunc);
+
     void setSchema(uint8_t payloadSize, uint8_t total = 1);
     void setSchema(uint8_t *payloadPtr, uint8_t payloadSize, uint8_t total);
+
     void setJson(toJson_t tojson, uint16_t jsonBufSize = 128);
     void setJson(toJson_t tojson, char *buf, uint16_t jsonBufSize = 128);
+
     void start();
     void sendLoop(bool connected);
     void printPayload(byte *buf, byte len);
